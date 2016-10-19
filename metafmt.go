@@ -49,11 +49,11 @@ type installMap map[string][]string
 type syntaxMap map[string][]string
 
 type formatter struct {
-	Commands   [][]string
-	Extensions []string
-	Install    installMap
-	Syntaxes   syntaxMap
-	Processor  func([]byte) ([]byte, error)
+	Commands      [][]string
+	Extensions    []string
+	Install       installMap
+	Syntaxes      syntaxMap
+	PostProcessor func([]byte) ([]byte, error)
 }
 
 var formatters = []*formatter{
@@ -155,7 +155,7 @@ var formatters = []*formatter{
 			EMACS:   []string{"ruby-mode"},
 			SUBLIME: []string{"Ruby"},
 		},
-		Processor: func(formatted []byte) ([]byte, error) {
+		PostProcessor: func(formatted []byte) ([]byte, error) {
 			sep := []byte("====================\n")
 			parts := bytes.SplitN(formatted, sep, 2)
 			return parts[1], nil
@@ -435,8 +435,8 @@ func formatChain(dst io.Writer, src io.Reader, formatter *formatter) error {
 		}
 	}
 
-	if formatter.Processor != nil {
-		formatted, err := formatter.Processor(buf.Bytes())
+	if formatter.PostProcessor != nil {
+		formatted, err := formatter.PostProcessor(buf.Bytes())
 		if err != nil {
 			return err
 		}
