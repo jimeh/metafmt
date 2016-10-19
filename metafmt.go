@@ -142,6 +142,25 @@ var formatters = []*formatter{
 			SUBLIME: []string{"Python"},
 		},
 	},
+	// Ruby
+	{
+		Commands: [][]string{
+			[]string{"rubocop", "--stdin", "--cache", "false", "--auto-correct", "--format", "emacs", "fake.rb"},
+		},
+		Install: installMap{
+			"any": []string{"gem", "install", "rubocop"},
+		},
+		Extensions: []string{".rb"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"ruby-mode"},
+			SUBLIME: []string{"Ruby"},
+		},
+		Processor: func(formatted []byte) ([]byte, error) {
+			sep := []byte("====================\n")
+			parts := bytes.SplitN(formatted, sep, 2)
+			return parts[1], nil
+		},
+	},
 	// SASS
 	{
 		Commands: [][]string{
