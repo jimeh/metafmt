@@ -436,12 +436,12 @@ func formatChain(dst io.Writer, src io.Reader, formatter *formatter) error {
 	}
 
 	if formatter.Processor != nil {
-		bytes, err := formatter.Processor(buf.Bytes())
+		formatted, err := formatter.Processor(buf.Bytes())
 		if err != nil {
 			return err
 		}
 
-		dst.Write(bytes)
+		dst.Write(formatted)
 		return nil
 	}
 
